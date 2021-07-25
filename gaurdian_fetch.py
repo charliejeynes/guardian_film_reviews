@@ -76,6 +76,8 @@ if __name__ == '__main__':
 
       df = convert2df_totalResults(total_results)
 
+      df.to_csv('./data/brads_test.csv')
+
       ##### this is to get all film reviews
       # data = allReviews()
       # content = data['response']['results']
