@@ -2,7 +2,7 @@ name: update_gaurdian_review
 
 on:
   schedule:
-    - cron: "0 0 * * *" #runs at 00:00 UTC everyday
+    - cron: "0 12 57 * *" #runs at 00:00 UTC everyday
 
 jobs:
   build:
@@ -23,10 +23,6 @@ jobs:
           pip install -r requirements.txt
           
       - name: execute py script # run guardian_fetch.py to get the latest data
-        env: 
-          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         run: python guardian_fetch.py
           
       - name: commit files
