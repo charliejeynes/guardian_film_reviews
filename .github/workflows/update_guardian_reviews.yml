@@ -1,11 +1,11 @@
 name: update_guardian_review
 
-#on:
-  #schedule:
-    #- cron: "0 0 * * *" #runs at 00:00 UTC everyday
+on:
+  schedule:
+    - cron: "0 0 * * *" #runs at 00:00 UTC everyday
 
 # Controls when the workflow will run
-on:
+#on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
