@@ -1,8 +1,8 @@
-name: update_gaurdian_review
+name: update_guardian_review
 
 on:
   schedule:
-    - cron: "0 13 * * *" #runs at 13:00 UTC everyday
+    - cron: "0 0 * * *" #runs at 13:00 UTC everyday
 
 jobs:
   build:
