@@ -2,7 +2,7 @@ name: update_gaurdian_review
 
 on:
   schedule:
-    - cron: "0 12 57 * *" #runs at 00:00 UTC everyday
+    - cron: "0 13 * * *" #runs at 13:00 UTC everyday
 
 jobs:
   build:
