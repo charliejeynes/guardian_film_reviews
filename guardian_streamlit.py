@@ -6,7 +6,7 @@ st.title('Guardian Film Review Database')
 
 st.write("The below Table is all of Peter Bradshaw's film reviews since 2000-present")
 
-df = pd.read_csv('\guardian_film_reviews\data\brads_test.csv')
+df = pd.read_csv(r'\guardian_film_reviews\data\brads_test.csv')
 
 df1 = df[['headline', 'webPublicationDate', 'starRating', 'shortUrl', 'bodyText']]
 
