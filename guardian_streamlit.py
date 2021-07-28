@@ -3,18 +3,20 @@ import numpy as np
 import pandas as pd
 import requests
 import io
-   
-@st.cache
-def get_data():
-    url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/brads_test.csv" # Make sure the url is the raw version of the file on GitHub
-    download = requests.get(url).content
-df = get_data()
-
-df = pd.read_csv(io.StringIO(download.decode('utf-8')))
 
 st.title('Guardian Film Review Database')
 
 st.write("The below Table is all of Peter Bradshaw's film reviews since 2000-present")
+
+@st.cache
+def get_data():
+   url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/brads_test.csv" # Make sure the url is the raw version of the file on GitHub
+   download = requests.get(url).content
+   return download
+   
+df = get_data()
+
+df = pd.read_csv(io.StringIO(download.decode('utf-8')))
 
 #df = pd.read_csv('https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/brads_test.csv')
 
