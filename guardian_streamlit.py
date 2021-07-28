@@ -14,7 +14,7 @@ def get_data():
    download = requests.get(url).content
    return download
    
-df = get_data()
+download = get_data()
 
 df = pd.read_csv(io.StringIO(download.decode('utf-8')))
 
