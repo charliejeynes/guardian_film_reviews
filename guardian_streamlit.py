@@ -11,7 +11,8 @@ st.write("You can use the sidebar to filter results")
 
 @st.cache
 def get_data(filter=None):
-    df1 = pd.read_csv(r'.\data\all_reviews.csv')
+    url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/all_reviews.csv" # Make sure the url is the raw version of the file on GitHub
+    df1 = requests.get(url).content
     df1 = df1.replace(np.nan, 'N/A', regex=True)
     pd.set_option('display.max_colwidth', -1)
     def make_clickable(link):
