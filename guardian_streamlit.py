@@ -88,7 +88,7 @@ else:
         st.write(df1, unsafe_allow_html=True)
     else:
         st.write("There are currently {} Guardian Film reviews. The below table shows a sample of these".format(rows))
-        st.write(df_pd.tail(100).to_html(escape=False), unsafe_allow_html=True)
+        st.write(df_pd.head(100).to_html(escape=False), unsafe_allow_html=True)
 
 
 
