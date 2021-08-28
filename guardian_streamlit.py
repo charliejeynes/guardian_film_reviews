@@ -25,7 +25,7 @@ def get_data(filter=None):
     df1['link'] = df1['shortUrl'].apply(make_clickable)
     df1 = df1[['Film name & headline', 'link', 'starRating', 'critic', 'date']]
     df1 = df1.drop_duplicates(subset=['link'], keep='last')
-    df1 = df1.sort_values(by='Film name & headline')
+    df1 = df1.sort_values(by='date', ascending=False)
     if filter==film_search:
         df1 = df1[df1['Film name & headline'].str.contains(film_search, case=False) == True]
         rows = len(df1)
