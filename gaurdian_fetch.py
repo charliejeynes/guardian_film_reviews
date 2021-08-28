@@ -114,7 +114,7 @@ def getCritic(row):
             pass
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
       ##### this gets all peter bradshaw's reviews
       # data = pageIterate(pageNumber=1)
@@ -139,16 +139,16 @@ def getCritic(row):
       # df['just_date'] = df['date'].dt.date
 
       ##### this is to get all film reviews and page iterate
-#       data = allReviews_pageIterate(pageNumber=1)
-#       total_results = []
-#       totalPages = data['response']['pages']
-#       for page in range(totalPages):
-#             page = page+1
-#             data = allReviews_pageIterate(pageNumber=page)
-#             total_results.append(data)
-#       df = convert2df_totalResults(total_results)
-#       df1 = unpack_allReviews(df)
-#       #df2['critic'] = df2['tags'].apply(getCritic)
-#       #df2 = df.drop(columns=['tags'])
-#       df1.to_csv('./data/all_reviews.csv')
-#       ##s = df['tags'].apply(getCritic)
+      data = allReviews_pageIterate(pageNumber=1)
+      total_results = []
+      totalPages = data['response']['pages']
+      for page in range(totalPages):
+            page = page+1
+            data = allReviews_pageIterate(pageNumber=page)
+            total_results.append(data)
+      df = convert2df_totalResults(total_results)
+      df1 = unpack_allReviews(df)
+      #df2['critic'] = df2['tags'].apply(getCritic)
+      #df2 = df.drop(columns=['tags'])
+      df1.to_csv('./data/all_reviews.csv')
+      ##s = df['tags'].apply(getCritic)
