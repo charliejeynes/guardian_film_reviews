@@ -114,7 +114,7 @@ def getCritic(row):
             pass
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
       ##### this gets all peter bradshaw's reviews
       # data = pageIterate(pageNumber=1)
