@@ -9,7 +9,7 @@ st.title('Guardian Film Review Database')
 st.write("This website enables you to browse all of the Guardian's film reviews since 2000-present")
 st.write("You can use the sidebar to filter results")
 
-@st.cache
+@st.cache(ttl=60, max_entries=20)
 def get_data(filter=None):
     url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/all_reviews.csv" # Make sure the url is the raw version of the file on GitHub
     download = requests.get(url).content
