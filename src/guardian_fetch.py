@@ -53,10 +53,10 @@ def all_reviews_page_iterate(page_number=1):
       '&show-tags=contributor'\
       '&format=json'\
       '&tag=film/film,tone/reviews'\
-      '&from-date=2023-01-01'\
+      '&from-date=2000-01-01'\
       '&show-fields=starRating,headline,thumbnail,short-url,bodyText' \
       '&show-refinements=all&order-by=relevance'\
-      '&api-key=55eae2e6-6f53-4545-8b01-6d618c991427'\
+      '&api-key=55eae2e6-6f53-4545-8b01-6d618c991427' \
       '&page-size=200'\
       '&page={}'.format(page_number)
       data = request_content(url)
@@ -79,7 +79,6 @@ def unpack_all_reviews(df):
       df_fields = df_fields.rename(columns={'headline': 'Film name & headline'})
       return df_fields
 
-
 def add_distributors_col(df):
       distributor = [
             'Netflix',
@@ -93,7 +92,7 @@ def add_distributors_col(df):
       test = f'({distributor})'
 
       df['distributor'] = df['bodyText'].str.extract(f'({distributor})')
-
+      return df
 
 def main():
       ##### this is to get all film reviews and page iterate
@@ -112,8 +111,8 @@ def main():
 if __name__ == '__main__':
 
       df = main()
-      text = df.loc[0:0, 'bodyText'].reset_index()
-      text = df.at[108, 'bodyText']
+      # text = df.loc[0:0, 'bodyText'].reset_index()
+      # text = df.at[108, 'bodyText']
 
       ##### this gets all peter bradshaw's reviews
       # data = pageIterate(pageNumber=1)
