@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
           
       - name: execute py script # run guardian_fetch.py to get the latest data
-        run: python guardian_fetch.py
+        run: python src/guardian_fetch.py
           
       - name: commit files
         run: |
