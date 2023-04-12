@@ -8,7 +8,7 @@ eg_url = 'http://content.guardianapis.com/search?order-by=newest&show-fields=bod
 def request_content(url:str) -> dict:
       """
       :param url: str call specified in api_call_film_reviews_page_iterate()
-      :return: jason dictionary which is very nested
+      :return: json dictionary which is very nested
       """
       resp = req.get(url)
       data = resp.json()

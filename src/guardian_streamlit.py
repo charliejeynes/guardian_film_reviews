@@ -1,28 +1,41 @@
-#import SessionState
+
 import streamlit as st
 import numpy as np
 import pandas as pd
 import requests
 import io
 
-from st_aggrid import AgGrid
-from st_aggrid import JsCode
-from st_aggrid.grid_options_builder import GridOptionsBuilder
-
+# TODO get AgGrid to work with embedded html
+# from st_aggrid import AgGrid
+# from st_aggrid import JsCode
+# from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 def welcome_page():
+    """ This is always displayed at the top"""
     st.title('Guardian Film Review Database')
-    st.write("This website enables you to browse all of the Guardian's film reviews since 2000-present")
-    st.write("You can use the sidebar to filter results")
+    st.markdown("This website enables you to browse all of the Guardian's film reviews since 2000-present")
+    st.markdown("You can use the sidebar to filter results")
 
 @st.cache_data()
-def get_data_into_df(filter=None):
-    url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/all_reviews.csv" # Make sure the url is the raw version of the file on GitHub
-    download = requests.get(url).content
-    df = pd.read_csv(io.StringIO(download.decode('utf-8')))
+def get_data_into_df(local:bool = False) -> pd.DataFrame:
+    """
+    :param local: flag to save to local hardrive, else gets datafrom that saved on GitHub
+    :return:
+    """
+    if local:
+        df = pd.read_csv('../data/all_reviews.csv')
+    else:
+        url = "https://raw.githubusercontent.com/charliejeynes/guardian_film_reviews/main/data/all_reviews.csv" # Make sure the url is the raw version of the file on GitHub
+        download = requests.get(url).content
+        df = pd.read_csv(io.StringIO(download.decode('utf-8')))
     return df
 
-def process_df(df):
+def process_df(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Cleans up the df and adds a clickable html link
+    :param df:
+    :return: cleaned df
+    """
     df = df.replace(np.nan, 'N/A', regex=True)
     pd.set_option('display.max_colwidth', None)
     def make_clickable(link):
@@ -40,6 +53,7 @@ def process_df(df):
     # df = df.reset_index(drop=True)
     return df
 
+# TODO get AgGrid to work with embedded html
 # def process_render_df(df):
 #     # df = df.replace(np.nan, 'N/A', regex=True)
 #     # df = df[['Film name & headline', 'starRating', 'critic', 'date']]
@@ -55,7 +69,15 @@ def process_df(df):
 #                         width=300)
 #     AgGrid(df, gridOptions=gridoptions, allow_unsafe_jscode=True, height=500, theme='alpine')
 
-def implement_search_display_results(df, search, column1, column2=None):
+def implement_search_display_results(df: pd.DataFrame, search: str|list[str], column1:str, column2:str = None) -> None:
+    """
+    Takes the user inputs from filter boxes and filters the df accordingly
+    :param df: df of reviews
+    :param search: str or list of str from the user
+    :param column1: str name of the column to filter on
+    :param column2: str name of the column to filter on
+    :return: displays the filtered df
+    """
     st.write(f'You are filtering results using the following:')
     st.write(search)
     if isinstance(search, list):
@@ -70,7 +92,12 @@ def implement_search_display_results(df, search, column1, column2=None):
     st.write(f"There are {rows} reviews in the table below")
     st.write(df, unsafe_allow_html=True)
 
-def sidebar_filter_implementation(df):
+def sidebar_filter_implementation(df: pd.DataFrame) -> None:
+    """
+    Sets up filter boxes and logic for filtering the df based on user input
+    :param df:
+    :return:
+    """
     # title for film
     st.sidebar.title("Search for a film")
     film_search = st.sidebar.text_input("Search for a film")
@@ -97,45 +124,16 @@ def sidebar_filter_implementation(df):
             "There are currently {} Guardian Film reviews. The below table shows the 100 most recent".format(len(df)))
         clicked = st.button('click here to show all Guardian Film Reviews (takes about 5 seconds to load)')
         st.write(df.head(100).to_html(escape=False), unsafe_allow_html=True)
-        # AgGrid(df.head(100))
         if clicked:
             st.write(df, unsafe_allow_html=True)
 
 
 def main():
     welcome_page()
-    df = get_data_into_df()
+    df = get_data_into_df(local=False)
     df = process_df(df)
     sidebar_filter_implementation(df)
 
 if __name__ == "__main__":
     main()
 
-
-
-
-
-
-# # def add_stream_url(track_ids):
-# # 	return [f'https://open.spotify.com/track/{t}' for t in track_ids]
-# def make_clickable(url, text):
-#     return f'<a target="_blank" href="{url}">{text}</a>'
-# # show data
-# if st.checkbox('Include Preview URLs'):
-# 	# df['preview'] = add_stream_url(df.track_id)
-# 	df1['html_link'] = df1['shortUrl'].apply(make_clickable, args = ('Listen',))
-# 	st.write(df1.to_html(escape = False), unsafe_allow_html = True)
-# else:
-# 	st.write(df1)
-
-#title for critics
-# st.sidebar.title("Filter by critic")
-# critic_select = st.sidebar.selectbox("Select Critic", ('All', 'Peter Bradshaw', 'Wendy Ide'))
-# if critic_select:
-#     df1[df1['critic'].str.contains(critic_select, case=False) == True]
-# else:
-#     st.write(get_data())
-
-
-
-#if __name__ == '__main__':
