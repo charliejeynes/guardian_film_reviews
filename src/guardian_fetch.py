@@ -1,23 +1,24 @@
+import numpy as np
 import pandas as pd
 import requests as req
 from ast import literal_eval
 
-url0 = 'http://content.guardianapis.com/search?order-by=newest&show-fields=bodyText&q=politics&api-key=test'
+eg_url = 'http://content.guardianapis.com/search?order-by=newest&show-fields=bodyText&q=politics&api-key=test'
 
-def request_content(url):
+def request_content(url:str) -> dict:
+      """
+      :param url: str call specified in api_call_film_reviews_page_iterate()
+      :return: jason dictionary which is very nested
+      """
       resp = req.get(url)
       data = resp.json()
       return data
 
-def convert2df(data):
-      content = data['response']['results']
-      df = pd.DataFrame(content)
-      fields = [x for x in df['fields']]
-      df1 = pd.DataFrame(fields)
-      df3 = pd.concat([df, df1], axis=1, join="inner")
-      return df3
-
-def convert_to_df_total_results(total_results):
+def convert_to_df_total_results(total_results: list[dict]) -> pd.DataFrame:
+      """
+      :param data: nested dictionary from api call
+      :return: unpacked dict into a dataframe
+      """
       total_content = []
       for result in total_results:
             for item in result['response']['results']:
@@ -25,10 +26,12 @@ def convert_to_df_total_results(total_results):
       df = pd.DataFrame(total_content)
       fields = [x for x in df['fields']]
       df1 = pd.DataFrame(fields)
-      df3 = pd.concat([df, df1], axis=1, join="inner")
-      return df3
+      df2 = pd.concat([df, df1], axis=1, join="inner")
+      return df2
 
-def get_params():
+# TODO: swap up the api call str for params in get instead as it's easier to read
+def get_api_params():
+      """not implemented"""
       MY_API_KEY = '55eae2e6-6f53-4545-8b01-6d618c991427'
       API_ENDPOINT = 'http://content.guardianapis.com/search'
       my_params = {
@@ -41,10 +44,10 @@ def get_params():
       }
       return my_params
 
-def all_reviews_page_iterate(page_number=1):
+def api_call_film_reviews_page_iterate(page_number:int = 1) -> dict:
       """
-      Provides the REST apio call to get film reviews.
-      :param page_number: default is
+      Provides the REST api call
+      :param page_number: default is 1 and can be iterated over to get all the pages
       :return: data from the website
       """
       url = \
@@ -62,15 +65,19 @@ def all_reviews_page_iterate(page_number=1):
       data = request_content(url)
       return data
 
-def get_critic(row):
-      # lst = []
-      # lst.append(row)
-      try:
-            return row[0]['webTitle']
-      except:
-            pass
 
-def unpack_all_reviews(df):
+def unpack_all_reviews(df: pd.DataFrame) -> pd.DataFrame:
+      """
+      Cleans up the df and adds critics column
+      :param df:
+      :return: processed df
+      """
+      def get_critic(row):
+            try:
+                  return row[0]['webTitle']
+            except:
+                  pass
+
       fields = [x for x in df['fields']]
       df_fields = pd.DataFrame(fields)
       df_fields = df_fields.drop(columns='thumbnail')
@@ -79,61 +86,50 @@ def unpack_all_reviews(df):
       df_fields = df_fields.rename(columns={'headline': 'Film name & headline'})
       return df_fields
 
-def add_distributors_col(df):
+def add_distributors_col(df:pd.DataFrame) -> pd.DataFrame:
+      """
+      add distributor column
+      :param df:
+      :return: df with extra column
+      """
       distributor = [
             'Netflix',
             'Prime',
             'Now TV',
             'Disney',
             'True Story',
+            'theatres',
+            'cinemas',
+            'digital platforms',
+            'Mubi'
       ]
 
       distributor = '|'.join(distributor)
-      test = f'({distributor})'
-
       df['distributor'] = df['bodyText'].str.extract(f'({distributor})')
+      df['distributor'][df['distributor'].astype(str) == 'nan'] = 'presumed cinemas'
       return df
 
-def main():
-      ##### this is to get all film reviews and page iterate
-      data = all_reviews_page_iterate(page_number=1)
+def main() -> pd.DataFrame:
+      """
+      iterates through the pages of the api call and gets all the data into a df
+      :return: df with reviews
+      """
+      data = api_call_film_reviews_page_iterate(page_number=1) # intialise to get how many pages
       total_results = []
-      total_pages = data['response']['pages']
+      total_pages = data['response']['pages'] # intialise to get how many pages
       for page in range(total_pages):
             page = page+1
-            data = all_reviews_page_iterate(page_number=page)
+            data = api_call_film_reviews_page_iterate(page_number=page)
             total_results.append(data)
       df = convert_to_df_total_results(total_results)
       df = unpack_all_reviews(df)
       df = add_distributors_col(df)
+      df.to_csv('./data/all_reviews.csv')
       return df
 
 if __name__ == '__main__':
-
       df = main()
-      # text = df.loc[0:0, 'bodyText'].reset_index()
-      # text = df.at[108, 'bodyText']
 
-      ##### this gets all peter bradshaw's reviews
-      # data = pageIterate(pageNumber=1)
-      # total_results = []
-      # totalPages = data['response']['pages']
-      # for page in range(totalPages):
-      #       page = page+1
-      #       data = pageIterate(pageNumber=page)
-      #       total_results.append(data)
-      # df = convert2df_totalResults(total_results)
-      # df.to_csv('./data/brads_test.csv')
 
-      ##### this is to get all film reviews
-      # data = allReviews()
-      # content = data['response']['results']
-      # df = pd.DataFrame(content)
-      # df = convert2df(data)
-      # df = unpack_allReviews(df)
-      # df['critic'] = df['tags'].apply(getCritic)
-      # df = df.drop(columns=['tags'])
-
-      # df['just_date'] = df['date'].dt.date
 
 
