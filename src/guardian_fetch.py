@@ -1,7 +1,6 @@
-import numpy as np
+
 import pandas as pd
 import requests as req
-from ast import literal_eval
 
 eg_url = 'http://content.guardianapis.com/search?order-by=newest&show-fields=bodyText&q=politics&api-key=test'
 
