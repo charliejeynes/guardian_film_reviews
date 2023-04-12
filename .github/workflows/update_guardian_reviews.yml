@@ -26,7 +26,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8' # install the python version needed
+          python-version: '3.10' # install the python version needed
           
       - name: install python packages
         run: |
@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
           
       - name: execute py script # run guardian_fetch.py to get the latest data
-        run: python gaurdian_fetch.py
+        run: python guardian_fetch.py
           
       - name: commit files
         run: |
